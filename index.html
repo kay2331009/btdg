@@ -111,60 +111,17 @@
     position:fixed;bottom:18px;left:0;right:0;text-align:center;
     font-family:'STKaiti','KaiTi',serif;
     font-size:0.6rem;letter-spacing:0.4em;color:rgba(180,160,140,0.18);
-    z-index:1;
+    z-index:2;
   }
 
   /* 宇宙波浪动画 */
   .cosmic-waves{
-    position:fixed;bottom:0;left:0;width:100%;height:120px;
-    z-index:0;pointer-events:none;overflow:hidden;
+    position:fixed;bottom:0;left:0;width:100%;height:140px;
+    z-index:1;pointer-events:none;
   }
 
-  .wave{
-    position:absolute;bottom:0;left:-10%;width:120%;height:100%;
-    opacity:0.35;
-  }
-
-  .wave1{
-    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120' preserveAspectRatio='none'%3E%3Cpath d='M0,60 C180,120 360,0 540,60 C720,120 900,0 1080,60 C1260,120 1440,0 1440,60 L1440,120 L0,120Z' fill='none' stroke='%23c8534a' stroke-width='1' opacity='0.4'/%3E%3C/svg%3E") center/cover no-repeat;
-    animation:waveMove 8s ease-in-out infinite;
-  }
-
-  .wave2{
-    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120' preserveAspectRatio='none'%3E%3Cpath d='M0,80 C240,20 480,110 720,70 C960,30 1200,100 1440,60 L1440,120 L0,120Z' fill='none' stroke='%2380c8a0' stroke-width='1' opacity='0.35'/%3E%3C/svg%3E") center/cover no-repeat;
-    animation:waveMove 12s ease-in-out infinite reverse;
-    opacity:0.25;
-  }
-
-  .wave3{
-    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120' preserveAspectRatio='none'%3E%3Cpath d='M0,40 C120,90 360,10 540,50 C720,90 960,20 1200,60 C1320,80 1440,40 1440,60 L1440,120 L0,120Z' fill='none' stroke='%23e8c89a' stroke-width='0.8' opacity='0.25'/%3E%3C/svg%3E") center/cover no-repeat;
-    animation:waveMove 16s ease-in-out infinite;
-    opacity:0.2;
-  }
-
-  /* 频率粒子 */
-  .freq-particles{
-    position:absolute;bottom:0;left:0;width:100%;height:100%;
-    overflow:hidden;
-  }
-
-  .freq-dot{
-    position:absolute;width:2px;height:2px;
-    background:rgba(200,120,120,0.5);
-    border-radius:50%;
-    animation:freqFloat linear infinite;
-  }
-
-  @keyframes waveMove{
-    0%,100%{transform:translateX(0)}
-    50%{transform:translateX(-3%)}
-  }
-
-  @keyframes freqFloat{
-    0%{transform:translateY(0) translateX(0);opacity:0}
-    10%{opacity:0.8}
-    90%{opacity:0.3}
-    100%{transform:translateY(-100px) translateX(20px);opacity:0}
+  .cosmic-waves canvas{
+    width:100%;height:100%;
   }
 </style>
 </head>
@@ -225,25 +182,90 @@
 <div class="footer">甲木向阳而生 · 壬水润下而守</div>
 
 <!-- 宇宙波浪 -->
-<div class="cosmic-waves" id="cosmicWaves">
-  <div class="wave wave1"></div>
-  <div class="wave wave2"></div>
-  <div class="wave wave3"></div>
-  <div class="freq-particles" id="freqParticles"></div>
+<div class="cosmic-waves">
+  <canvas id="waveCanvas"></canvas>
 </div>
 
 <script>
-  // 生成频率粒子
-  const fp = document.getElementById('freqParticles');
-  for(let i=0;i<20;i++){
-    const d = document.createElement('div');
-    d.className = 'freq-dot';
-    d.style.left = Math.random()*100+'%';
-    d.style.animationDuration = (4+Math.random()*8)+'s';
-    d.style.animationDelay = Math.random()*8+'s';
-    d.style.width = d.style.height = (1+Math.random()*2)+'px';
-    fp.appendChild(d);
+(function(){
+  var canvas = document.getElementById('waveCanvas');
+  var ctx = canvas.getContext('2d');
+  var W, H;
+  var t = 0;
+
+  function resize(){
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = 140;
   }
+  window.addEventListener('resize', resize);
+  resize();
+
+  var waves = [
+    {color:'200,83,74',   amp:18, freq:0.012, speed:0.018, yf:0.72},
+    {color:'128,200,160', amp:14, freq:0.016, speed:0.012, yf:0.78},
+    {color:'232,200,154', amp:10, freq:0.022, speed:0.008, yf:0.84},
+  ];
+
+  // 小粒子
+  var particles = [];
+  for(var i=0;i<25;i++){
+    particles.push({
+      x: Math.random()*2000,
+      y: Math.random()*120,
+      size: 0.5+Math.random()*1.5,
+      speed: 0.08+Math.random()*0.15,
+      drift: (Math.random()-0.5)*0.05,
+      opacity: 0.2+Math.random()*0.4,
+    });
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    t += 1;
+
+    // 波浪
+    waves.forEach(function(w,idx){
+      ctx.beginPath();
+      var baseY = H * w.yf;
+      ctx.moveTo(0, H);
+      for(var x=0; x<=W; x+=2){
+        var y = baseY + Math.sin(x * w.freq + t * w.speed) * w.amp
+                      + Math.sin(x * w.freq * 2.3 + t * w.speed * 1.5) * w.amp * 0.4;
+        ctx.lineTo(x, y);
+      }
+      ctx.lineTo(W, H);
+      ctx.closePath();
+
+      // 半透明填充
+      var rgbo = waves.length - idx;
+      ctx.fillStyle = 'rgba(' + w.color + ',' + (0.06 * rgbo) + ')';
+      ctx.fill();
+
+      // 线条
+      ctx.strokeStyle = 'rgba(' + w.color + ',' + (0.25 * rgbo / waves.length) + ')';
+      ctx.lineWidth = 0.8;
+      ctx.stroke();
+    });
+
+    // 频率粒子
+    particles.forEach(function(p){
+      p.x += p.drift;
+      p.y -= p.speed;
+      if(p.y < -5){ p.y = H+5; p.x = Math.random()*W; }
+      if(p.x < -5) p.x = W+5;
+      if(p.x > W+5) p.x = -5;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(200,120,120,' + p.opacity + ')';
+      ctx.fill();
+    });
+
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+})();
 </script>
 
 </body>
