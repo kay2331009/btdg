@@ -114,63 +114,53 @@
     z-index:3;
   }
 
-  /* 宇宙波浪动画 - 大幅度波动 */
+  /* 宇宙波浪群 - 多个波浪堆叠 */
   .cosmic-waves{
-    position:fixed;bottom:0;left:-50%;width:300%;height:160px;
+    position:fixed;bottom:0;left:-50%;width:300%;height:200px;
     z-index:2;pointer-events:none;
   }
 
-  .wave1,.wave2{
+  .wave{
     position:absolute;left:0;width:100%;
+    border-radius:60% 70% 0 0 / 80% 100% 0 0;
+    border-top:1px solid;
   }
 
-  .wave1{
-    bottom:-20px;height:110px;
-    background:rgba(200,140,120,0.06);
-    border-top:1.5px solid rgba(200,140,120,0.3);
-    border-radius:60% 80% 0 0 / 60% 100% 0 0;
-    animation:waveBig1 6s ease-in-out infinite;
-  }
+  .w1{ bottom:-10px;  height:120px; background:rgba(200,140,120,0.06); border-color:rgba(200,140,120,0.28); animation:wv  5s ease-in-out infinite; }
+  .w2{ bottom:-25px; height:110px; background:rgba(195,145,125,0.05); border-color:rgba(195,145,125,0.24); animation:wv  7s ease-in-out infinite reverse; }
+  .w3{ bottom:-38px; height:105px; background:rgba(190,150,130,0.05); border-color:rgba(190,150,130,0.21); animation:wv  6s ease-in-out infinite 0.3s; }
+  .w4{ bottom:-50px; height:100px; background:rgba(185,148,135,0.04); border-color:rgba(185,148,135,0.18); animation:wv  8s ease-in-out infinite reverse 0.5s; }
+  .w5{ bottom:-62px; height:95px;  background:rgba(180,146,140,0.04); border-color:rgba(180,146,140,0.16); animation:wv  5.5s ease-in-out infinite 0.8s; }
+  .w6{ bottom:-74px; height:90px;  background:rgba(175,144,145,0.04); border-color:rgba(175,144,145,0.14); animation:wv  7.5s ease-in-out infinite reverse 0.2s; }
+  .w7{ bottom:-85px; height:85px;  background:rgba(170,142,150,0.03); border-color:rgba(170,142,150,0.12); animation:wv  6.5s ease-in-out infinite 1s; }
+  .w8{ bottom:-95px; height:80px;  background:rgba(165,140,155,0.03); border-color:rgba(165,140,155,0.10); animation:wv  9s ease-in-out infinite reverse 0.6s; }
+  .w9{ bottom:-104px;height:75px;  background:rgba(160,138,160,0.03); border-color:rgba(160,138,160,0.09); animation:wv  5s ease-in-out infinite 1.2s; }
+  .w10{bottom:-112px;height:70px;  background:rgba(155,136,165,0.02); border-color:rgba(155,136,165,0.08); animation:wv  8s ease-in-out infinite reverse 0.4s; }
 
-  .wave2{
-    bottom:-35px;height:100px;
-    background:rgba(160,120,180,0.05);
-    border-top:1.5px solid rgba(160,120,180,0.25);
-    border-radius:70% 60% 0 0 / 80% 90% 0 0;
-    animation:waveBig2 8s ease-in-out infinite;
-  }
-
-  @keyframes waveBig1{
+  @keyframes wv{
     0%,100%{transform:translateX(0) scaleY(1)}
-    25%{transform:translateX(-8%) scaleY(1.3)}
-    50%{transform:translateX(-3%) scaleY(0.85)}
-    75%{transform:translateX(-12%) scaleY(1.2)}
-  }
-
-  @keyframes waveBig2{
-    0%,100%{transform:translateX(0) scaleY(1)}
-    30%{transform:translateX(6%) scaleY(1.2)}
-    60%{transform:translateX(10%) scaleY(0.9)}
-    80%{transform:translateX(4%) scaleY(1.15)}
+    20%{transform:translateX(-6%) scaleY(1.25)}
+    50%{transform:translateX(-2%) scaleY(0.82)}
+    75%{transform:translateX(-10%) scaleY(1.18)}
   }
 
   /* 频率粒子 */
   .freq-particles{
-    position:fixed;bottom:0;left:0;width:100%;height:160px;
+    position:fixed;bottom:0;left:0;width:100%;height:180px;
     z-index:2;pointer-events:none;overflow:hidden;
   }
 
   .fp{
-    position:absolute;bottom:-10px;border-radius:50%;
-    background:rgba(200,150,160,0.35);
+    position:absolute;bottom:-8px;border-radius:50%;
+    background:rgba(200,150,160,0.4);
     animation:fpRise linear infinite;
   }
 
   @keyframes fpRise{
-    0%{transform:translateY(0) translateX(0);opacity:0;transform:scale(1)}
-    15%{opacity:0.6;transform:scale(1.2)}
-    70%{opacity:0.2;transform:scale(0.8)}
-    100%{transform:translateY(-120px) translateX(15px);opacity:0;transform:scale(0.5)}
+    0%{transform:translateY(0) translateX(0);opacity:0}
+    12%{opacity:0.65}
+    70%{opacity:0.2}
+    100%{transform:translateY(-140px) translateX(12px);opacity:0}
   }
 </style>
 </head>
@@ -230,19 +220,27 @@
 
 <div class="footer">甲木向阳而生 · 壬水润下而守</div>
 
-<!-- 宇宙波浪 -->
+<!-- 宇宙波浪群 -->
 <div class="cosmic-waves">
-  <div class="wave1"></div>
-  <div class="wave2"></div>
+  <div class="wave w1"></div>
+  <div class="wave w2"></div>
+  <div class="wave w3"></div>
+  <div class="wave w4"></div>
+  <div class="wave w5"></div>
+  <div class="wave w6"></div>
+  <div class="wave w7"></div>
+  <div class="wave w8"></div>
+  <div class="wave w9"></div>
+  <div class="wave w10"></div>
 </div>
 <div class="freq-particles" id="fp"></div>
 
 <script>
 var fp=document.getElementById('fp');
-for(var i=0;i<15;i++){
+for(var i=0;i<20;i++){
   var d=document.createElement('div');
   d.className='fp';
-  d.style.cssText='left:'+(Math.random()*100)+'%;width:'+(1.5+Math.random()*2)+'px;height:'+(1.5+Math.random()*2)+'px;animation-duration:'+(4+Math.random()*6)+'s;animation-delay:'+(Math.random()*10)+'s';
+  d.style.cssText='left:'+(Math.random()*100)+'%;width:'+(1+Math.random()*2)+'px;height:'+(1+Math.random()*2)+'px;animation-duration:'+(4+Math.random()*7)+'s;animation-delay:'+(Math.random()*12)+'s';
   fp.appendChild(d);
 }
 </script>
