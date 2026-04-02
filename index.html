@@ -122,7 +122,7 @@
     border:1px solid rgba(200,160,120,0.25);
     border-radius:50%;
     cursor:pointer;
-    z-index:200;
+    z-index:201;
     display:flex;align-items:center;justify-content:center;
     transition:all 0.3s;
     color:rgba(200,160,120,0.5);
@@ -140,27 +140,25 @@
     color:rgba(220,180,140,0.9);
   }
 
-  /* 宇宙波浪群 - 磨砂模糊 */
+  /* 整页磨砂遮罩 */
+  .page-frost{
+    display:none;
+    position:fixed;inset:0;
+    z-index:100;pointer-events:none;
+  }
+
+  .page-frost.on{
+    display:block;
+  }
+
+  .page-frost canvas{
+    position:absolute;inset:0;width:100%;height:100%;
+  }
+
+  /* 宇宙波浪群 */
   .cosmic-waves{
     position:fixed;bottom:0;left:-50%;width:300%;height:200px;
-    z-index:2;pointer-events:none;
-  }
-
-  .cosmic-waves.blurred{
-    filter:blur(6px);
-    transition:filter 0.4s ease;
-  }
-
-  .cosmic-waves .blur-reveal{
-    position:absolute;inset:0;
-    opacity:0;
-    background:radial-gradient(circle 80px at var(--mx,50%) var(--my,50%), rgba(0,0,0,0.5) 0%, transparent 70%);
-    transition:opacity 0.3s;
-    pointer-events:none;
-  }
-
-  .cosmic-waves.blurred .blur-reveal{
-    opacity:1;
+    z-index:99;pointer-events:none;
   }
 
   .wave{
@@ -266,9 +264,13 @@
 <!-- 磨砂开关 -->
 <button class="blur-toggle" id="blurToggle" title="磨砂效果">◎</button>
 
+<!-- 整页磨砂层 -->
+<div class="page-frost" id="pageFrost">
+  <canvas id="frostCanvas"></canvas>
+</div>
+
 <!-- 宇宙波浪群 -->
 <div class="cosmic-waves" id="cosmicWaves">
-  <div class="blur-reveal" id="blurReveal"></div>
   <div class="wave w1"></div>
   <div class="wave w2"></div>
   <div class="wave w3"></div>
@@ -291,43 +293,66 @@ for(var i=0;i<20;i++){
   fp.appendChild(d);
 }
 
-// 磨砂效果
+// 整页磨砂效果
 var blurToggle=document.getElementById('blurToggle');
-var cosmicWaves=document.getElementById('cosmicWaves');
-var blurReveal=document.getElementById('blurReveal');
+var pageFrost=document.getElementById('pageFrost');
+var frostCanvas=document.getElementById('frostCanvas');
+var fctx=frostCanvas.getContext('2d');
 var blurOn=false;
-var mx=50,my=50;
-var animFrame;
+var mx=-999,my=-999;
+var raf;
 
-function updateBlurPos(x,y){
-  blurReveal.style.setProperty('--mx',x+'px');
-  blurReveal.style.setProperty('--my',y+'px');
+function resizeFrost(){
+  frostCanvas.width=window.innerWidth;
+  frostCanvas.height=window.innerHeight;
 }
+window.addEventListener('resize',resizeFrost);
+resizeFrost();
 
-function animBlur(){
-  if(blurOn){
-    animFrame=requestAnimationFrame(animBlur);
-  }
+function drawFrost(){
+  fctx.clearRect(0,0,frostCanvas.width,frostCanvas.height);
+  if(!blurOn) return;
+
+  // 填充模糊背景
+  fctx.fillStyle='rgba(8,8,16,0.92)';
+  fctx.fillRect(0,0,frostCanvas.width,frostCanvas.height);
+
+  // 挖出清晰圆
+  var grad=fctx.createRadialGradient(mx,my,0,mx,my,100);
+  grad.addColorStop(0,'rgba(0,0,0,0)');
+  grad.addColorStop(0.7,'rgba(0,0,0,0)');
+  grad.addColorStop(1,'rgba(0,0,0,0.95)');
+  fctx.fillStyle=grad;
+  fctx.fillRect(0,0,frostCanvas.width,frostCanvas.height);
+
+  // 硬边缘
+  fctx.globalCompositeOperation='destination-out';
+  fctx.beginPath();
+  fctx.arc(mx,my,80,0,Math.PI*2);
+  fctx.fill();
+  fctx.globalCompositeOperation='source-over';
+
+  raf=requestAnimationFrame(drawFrost);
 }
 
 blurToggle.addEventListener('click',function(e){
   e.stopPropagation();
   blurOn=!blurOn;
   blurToggle.classList.toggle('active',blurOn);
-  cosmicWaves.classList.toggle('blurred',blurOn);
+  pageFrost.classList.toggle('on',blurOn);
   blurToggle.textContent=blurOn?'◉':'◎';
   if(blurOn){
-    updateBlurPos(mx,my);
-    animBlur();
+    drawFrost();
   } else {
-    cancelAnimationFrame(animFrame);
+    cancelAnimationFrame(raf);
+    fctx.clearRect(0,0,frostCanvas.width,frostCanvas.height);
   }
 });
 
 document.addEventListener('mousemove',function(e){
   mx=e.clientX;
   my=e.clientY;
-  if(blurOn) updateBlurPos(mx,my);
+  if(blurOn) drawFrost();
 });
 </script>
 
