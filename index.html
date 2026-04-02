@@ -313,22 +313,20 @@ function drawFrost(){
   fctx.clearRect(0,0,frostCanvas.width,frostCanvas.height);
   if(!blurOn) return;
 
-  // 填充模糊背景
-  fctx.fillStyle='rgba(8,8,16,0.92)';
+  // 淡雾蒙蒙效果
+  fctx.fillStyle='rgba(20,20,35,0.45)';
   fctx.fillRect(0,0,frostCanvas.width,frostCanvas.height);
 
-  // 挖出清晰圆
-  var grad=fctx.createRadialGradient(mx,my,0,mx,my,100);
-  grad.addColorStop(0,'rgba(0,0,0,0)');
-  grad.addColorStop(0.7,'rgba(0,0,0,0)');
-  grad.addColorStop(1,'rgba(0,0,0,0.95)');
-  fctx.fillStyle=grad;
-  fctx.fillRect(0,0,frostCanvas.width,frostCanvas.height);
-
-  // 硬边缘
+  // 模糊圆形清晰区
   fctx.globalCompositeOperation='destination-out';
+  var r=90;
+  var grad=fctx.createRadialGradient(mx,my,0,mx,my,r);
+  grad.addColorStop(0,'rgba(0,0,0,1)');
+  grad.addColorStop(0.6,'rgba(0,0,0,1)');
+  grad.addColorStop(1,'rgba(0,0,0,0)');
+  fctx.fillStyle=grad;
   fctx.beginPath();
-  fctx.arc(mx,my,80,0,Math.PI*2);
+  fctx.arc(mx,my,r,0,Math.PI*2);
   fctx.fill();
   fctx.globalCompositeOperation='source-over';
 
