@@ -201,9 +201,9 @@
   resize();
 
   var waves = [
-    {color:'200,83,74',   amp:18, freq:0.012, speed:0.018, yf:0.72},
-    {color:'128,200,160', amp:14, freq:0.016, speed:0.012, yf:0.78},
-    {color:'232,200,154', amp:10, freq:0.022, speed:0.008, yf:0.84},
+    {color:'200,83,74',   amp:22, freq:0.008, speed:0.015, yf:0.65},
+    {color:'128,200,160', amp:16, freq:0.011, speed:0.010, yf:0.73},
+    {color:'232,200,154', amp:12, freq:0.015, speed:0.007, yf:0.80},
   ];
 
   // 小粒子
@@ -242,8 +242,8 @@
       ctx.fill();
 
       // 线条
-      ctx.strokeStyle = 'rgba(' + w.color + ',' + (0.25 * rgbo / waves.length) + ')';
-      ctx.lineWidth = 0.8;
+      ctx.strokeStyle = 'rgba(' + w.color + ',' + (0.35 * rgbo / waves.length) + ')';
+      ctx.lineWidth = 1.2;
       ctx.stroke();
     });
 
