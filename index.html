@@ -114,35 +114,30 @@
     z-index:3;
   }
 
-  /* 宇宙波浪动画 - 微弱的装饰线 */
+  /* 宇宙波浪动画 - 两条淡线交错 */
   .cosmic-waves{
-    position:fixed;bottom:0;left:0;width:200%;height:60px;
+    position:fixed;bottom:0;left:0;width:200%;height:50px;
     z-index:2;pointer-events:none;
-    animation:waveSlide 30s linear infinite;
-    opacity:0.5;
+    animation:waveSlide 24s linear infinite;
+    opacity:0.45;
   }
 
-  .wave1,.wave2,.wave3{
+  .wave1,.wave2{
     position:absolute;left:0;width:100%;
-    border-radius:50% 50% 0 0 / 20px 20px 0 0;
+    border-radius:50% 50% 0 0 / 16px 16px 0 0;
   }
 
   .wave1{
-    bottom:30px;height:40px;
-    background:rgba(200,83,74,0.06);
-    border-top:1px solid rgba(200,83,74,0.18);
+    bottom:22px;height:36px;
+    background:rgba(200,140,120,0.07);
+    border-top:1px solid rgba(200,140,120,0.15);
   }
 
   .wave2{
-    bottom:18px;height:35px;
-    background:rgba(128,200,160,0.05);
-    border-top:1px solid rgba(128,200,160,0.12);
-  }
-
-  .wave3{
-    bottom:5px;height:28px;
-    background:rgba(232,200,154,0.04);
-    border-top:1px solid rgba(232,200,154,0.10);
+    bottom:6px;height:30px;
+    background:rgba(160,120,180,0.06);
+    border-top:1px solid rgba(160,120,180,0.12);
+    animation:waveSlide2 18s linear infinite reverse;
   }
 
   @keyframes waveSlide{
@@ -150,15 +145,20 @@
     to{transform:translateX(-50%)}
   }
 
+  @keyframes waveSlide2{
+    from{transform:translateX(0)}
+    to{transform:translateX(-50%)}
+  }
+
   /* 频率粒子 - 极淡 */
   .freq-particles{
-    position:fixed;bottom:0;left:0;width:100%;height:80px;
+    position:fixed;bottom:0;left:0;width:100%;height:60px;
     z-index:2;pointer-events:none;overflow:hidden;
   }
 
   .fp{
     position:absolute;bottom:-3px;border-radius:50%;
-    background:rgba(200,140,140,0.2);
+    background:rgba(200,150,150,0.2);
     animation:fpRise linear infinite;
   }
 
@@ -166,7 +166,7 @@
     0%{transform:translateY(0) translateX(0);opacity:0}
     15%{opacity:0.25}
     85%{opacity:0.1}
-    100%{transform:translateY(-80px) translateX(10px);opacity:0}
+    100%{transform:translateY(-60px) translateX(8px);opacity:0}
   }
 </style>
 </head>
@@ -230,16 +230,15 @@
 <div class="cosmic-waves">
   <div class="wave1"></div>
   <div class="wave2"></div>
-  <div class="wave3"></div>
 </div>
 <div class="freq-particles" id="fp"></div>
 
 <script>
 var fp=document.getElementById('fp');
-for(var i=0;i<10;i++){
+for(var i=0;i<8;i++){
   var d=document.createElement('div');
   d.className='fp';
-  d.style.cssText='left:'+(Math.random()*100)+'%;width:'+(1+Math.random()*1.5)+'px;height:'+(1+Math.random()*1.5)+'px;animation-duration:'+(5+Math.random()*8)+'s;animation-delay:'+(Math.random()*12)+'s;opacity:0.3';
+  d.style.cssText='left:'+(Math.random()*100)+'%;width:'+(1+Math.random()*1.5)+'px;height:'+(1+Math.random()*1.5)+'px;animation-duration:'+(5+Math.random()*8)+'s;animation-delay:'+(Math.random()*12)+'s';
   fp.appendChild(d);
 }
 </script>
